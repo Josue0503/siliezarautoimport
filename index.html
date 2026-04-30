@@ -1,326 +1,337 @@
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Siliezar AutoImport | Sistema Pro</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- EL GUARDIÁN: Bloquea el acceso si no hay sesión activa -->
+    <script>
+        (function() {
+            // Verificamos si existe la llave en localStorage
+            if (localStorage.getItem("sesionActiva") !== "true") {
+                // Si no hay sesión, redirige al login ANTES de cargar el resto de la página
+                window.location.replace("login.html");
+            }
+        })();
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siliezar AutoImport | Sistema Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --blue-larios: #0f4c81;
+            --blue-dark: #0a2540;
+            --accent: #3b82f6;
+            --success: #2ecc71;
+            --danger: #ef4444;
+            --text-main: #1e293b;
+            --bg-light: #f4f7fa;
+        }
+
+        /* Animación de salida */
+        .fade-out {
+            opacity: 0 !important;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0; padding: 20px; font-size: 13px;
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto 20px;
+            background: white; padding: 15px 25px; border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
         
-        <style>
-            :root {
-                --blue-larios: #0f4c81;
-                --blue-dark: #0a2540;
-                --accent: #3b82f6;
-                --success: #2ecc71;
-                --danger: #ef4444;
-                --text-main: #1e293b;
-                --bg-light: #f4f7fa;
-            }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .logo-img { width: 140px; }
 
-            /* Animación de salida */
-            .fade-out {
-                opacity: 0;
-                transition: opacity 0.5s ease;
-                pointer-events: none;
-            }
+        .btn-logout {
+            background: #fff1f2; color: var(--danger); border: 1px solid #fecaca;
+            padding: 8px 15px; border-radius: 8px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s; font-size: 12px;
+        }
+        .btn-logout:hover { background: var(--danger); color: white; transform: translateY(-1px); }
 
-            body {
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                background-color: var(--bg-light);
-                color: var(--text-main);
-                margin: 0; padding: 20px; font-size: 13px;
-                opacity: 1;
-                transition: opacity 0.4s ease;
-            }
+        .main-layout {
+            display: grid; grid-template-columns: 350px 1fr; gap: 25px;
+            max-width: 1200px; margin: 0 auto;
+        }
 
-            header {
-                display: flex; justify-content: space-between; align-items: center;
-                max-width: 1200px; margin: 0 auto 20px;
-                background: white; padding: 15px 25px; border-radius: 15px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            }
-            
-            .header-left { display: flex; align-items: center; gap: 20px; }
-            .logo-img { width: 140px; }
+        .card {
+            background: white; padding: 20px; border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
 
-            .btn-logout {
-                background: #fff1f2; color: var(--danger); border: 1px solid #fecaca;
-                padding: 8px 15px; border-radius: 8px; font-weight: 700;
-                cursor: pointer; display: flex; align-items: center; gap: 8px;
-                transition: all 0.3s; font-size: 12px;
-            }
-            .btn-logout:hover { background: var(--danger); color: white; transform: translateY(-1px); }
+        .card-title {
+            font-size: 15px; font-weight: 800; margin-bottom: 15px;
+            color: var(--blue-dark); border-left: 4px solid var(--accent); padding-left: 10px;
+        }
 
-            .main-layout {
-                display: grid; grid-template-columns: 360px 1fr; gap: 25px;
-                max-width: 1200px; margin: 0 auto;
-            }
+        label { font-weight: 700; font-size: 10px; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        input, select {
+            width: 100%; padding: 10px; margin-bottom: 15px;
+            border: 2px solid #f1f5f9; border-radius: 8px; font-size: 13px;
+            box-sizing: border-box; transition: 0.3s;
+        }
 
-            .card {
-                background: white; padding: 20px; border-radius: 15px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            }
+        .btn-calc {
+            width: 100%; background: var(--blue-dark); color: white; border: none;
+            padding: 14px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px;
+        }
 
-            .card-title {
-                font-size: 15px; font-weight: 800; margin-bottom: 15px;
-                color: var(--blue-dark); border-left: 4px solid var(--accent); padding-left: 10px;
-            }
+        .btn-pdf {
+            width: 100%; background: white; border: 2px solid var(--accent);
+            color: var(--accent); padding: 12px; border-radius: 10px;
+            margin-top: 10px; font-weight: 700; display: none; cursor: pointer;
+        }
 
-            label { font-weight: 700; font-size: 10px; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 5px; }
-            input, select {
-                width: 100%; padding: 10px; margin-bottom: 15px;
-                border: 2px solid #f1f5f9; border-radius: 8px; font-size: 13px;
-                box-sizing: border-box; transition: 0.3s;
-            }
+        /* DISEÑO REPORTE PDF */
+        #area-impresion { background: white; padding: 30px; border-radius: 15px; min-height: 600px; }
+        .report-header { display: none; border-bottom: 2px solid var(--blue-dark); padding-bottom: 15px; margin-bottom: 20px; }
+        
+        .meta-grid {
+            display: none; grid-template-columns: repeat(3, 1fr);
+            background: #f8fafc; padding: 15px; border-radius: 10px;
+            border: 1px solid #e2e8f0; margin-bottom: 20px;
+        }
+        .meta-item b { font-size: 9px; color: #64748b; text-transform: uppercase; display: block; }
+        .meta-item span { font-weight: 700; color: var(--blue-dark); font-size: 14px; }
 
-            .btn-calc {
-                width: 100%; background: var(--blue-dark); color: white; border: none;
-                padding: 14px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px;
-            }
+        .result-container { display: flex; gap: 20px; }
 
-            .btn-pdf {
-                width: 100%; background: white; border: 2px solid var(--accent);
-                color: var(--accent); padding: 12px; border-radius: 10px;
-                margin-top: 10px; font-weight: 700; display: none; cursor: pointer;
-            }
+        .opt-card {
+            flex: 1; border: 1px solid #e2e8f0; border-radius: 15px;
+            overflow: hidden; background: white; display: flex; flex-direction: column;
+        }
+        .opt-header { background: var(--blue-dark); color: white; text-align: center; padding: 10px; font-weight: 800; font-size: 11px; }
+        .opt-header.blue { background: var(--blue-larios); }
 
-            /* DISEÑO REPORTE PDF */
-            #area-impresion { background: white; padding: 30px; border-radius: 15px; min-height: 600px; }
-            .report-header { display: none; border-bottom: 2px solid var(--blue-dark); padding-bottom: 15px; margin-bottom: 20px; }
-            
-            .meta-grid {
-                display: none; grid-template-columns: repeat(3, 1fr);
-                background: #f8fafc; padding: 15px; border-radius: 10px;
-                border: 1px solid #e2e8f0; margin-bottom: 20px;
-            }
-            .meta-item b { font-size: 9px; color: #64748b; text-transform: uppercase; display: block; }
-            .meta-item span { font-weight: 700; color: var(--blue-dark); font-size: 14px; }
+        .opt-cif { text-align: center; padding: 15px 5px; border-bottom: 1px solid #f1f5f9; }
+        .opt-cif b { font-size: 26px; color: var(--blue-dark); display: block; margin-top: 5px; }
 
-            .result-container { display: flex; gap: 20px; }
+        .cat-tag { 
+            font-size: 10px; font-weight: 800; color: #64748b; padding: 8px 15px; 
+            background: #f1f5f9; text-transform: uppercase; display: flex; align-items: center; gap: 8px;
+        }
+        .item-row { display: flex; justify-content: space-between; padding: 6px 15px; border-bottom: 1px solid #f8fafc; font-size: 12px; }
 
-            .opt-card {
-                flex: 1; border: 1px solid #e2e8f0; border-radius: 15px;
-                overflow: hidden; background: white; display: flex; flex-direction: column;
-            }
-            .opt-header { background: var(--blue-dark); color: white; text-align: center; padding: 10px; font-weight: 800; font-size: 11px; }
-            .opt-header.blue { background: var(--blue-larios); }
+        .total-section { 
+            background: #f8fafc; padding: 20px 10px; text-align: center; margin-top: auto;
+            border-top: 1px dashed #cbd5e1;
+        }
+        .total-value { color: var(--success); font-size: 32px; font-weight: 800; margin: 0; }
 
-            .opt-cif { text-align: center; padding: 15px 5px; border-bottom: 1px solid #f1f5f9; }
-            .opt-cif b { font-size: 26px; color: var(--blue-dark); display: block; margin-top: 5px; }
+        .disclaimer { display: none; font-size: 10px; color: #64748b; text-align: center; margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
 
-            .cat-tag { 
-                font-size: 10px; font-weight: 800; color: #64748b; padding: 8px 15px; 
-                background: #f1f5f9; text-transform: uppercase; display: flex; align-items: center; gap: 8px;
-            }
-            .item-row { display: flex; justify-content: space-between; padding: 6px 15px; border-bottom: 1px solid #f8fafc; font-size: 12px; }
+        @media print {
+            header, .ui-input-section, .btn-pdf { display: none !important; }
+            body { padding: 0; background: white !important; }
+            .main-layout { display: block !important; }
+            #area-impresion { padding: 0; border-radius: 0; box-shadow: none; }
+            .report-header, .meta-grid, .disclaimer { display: grid !important; }
+            .report-header { display: flex !important; justify-content: space-between; align-items: center; }
+            .result-container { display: flex !important; flex-direction: row !important; gap: 15px; }
+            .opt-card { border: 1px solid #cbd5e1 !important; height: auto !important; }
+            .total-section { background: #f8fafc !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
 
-            .total-section { 
-                background: #f8fafc; padding: 20px 10px; text-align: center; margin-top: auto;
-                border-top: 1px dashed #cbd5e1;
-            }
-            .total-value { color: var(--success); font-size: 32px; font-weight: 800; margin: 0; }
+    <header id="main-header">
+        <div class="header-left">
+            <img src="imagenes/logo.png" class="logo-img">
+            <div style="font-weight: 800; color: var(--blue-dark); font-size: 14px;">SISTEMA DE COTIZACIONES</div>
+        </div>
+        <button class="btn-logout" onclick="cerrarSesion()">
+            <i class="fas fa-sign-out-alt"></i> SALIR DEL SISTEMA
+        </button>
+    </header>
 
-            .disclaimer { display: none; font-size: 10px; color: #64748b; text-align: center; margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+    <div class="main-layout" id="main-content">
+        <div class="ui-input-section">
+            <div class="card">
+                <div class="card-title">Configuración del Vehículo</div>
+                
+                <label>Nombre del Vehículo</label>
+                <input type="text" id="vehiculo" placeholder="Ej. Honda Civic">
 
-            @media print {
-                header, .ui-input-section, .btn-pdf { display: none !important; }
-                body { padding: 0; background: white !important; }
-                .main-layout { display: block !important; }
-                #area-impresion { padding: 0; border-radius: 0; box-shadow: none; }
-                .report-header, .meta-grid, .disclaimer { display: grid !important; }
-                .report-header { display: flex !important; justify-content: space-between; align-items: center; }
-                .result-container { display: flex !important; flex-direction: row !important; gap: 15px; }
-                .opt-card { border: 1px solid #cbd5e1 !important; height: auto !important; }
-                .total-section { background: #f8fafc !important; -webkit-print-color-adjust: exact; }
-            }
-        </style>
-    </head>
-    <body>
+                <label>Número de Lote</label>
+                <input type="text" id="lote" placeholder="00000000">
 
-        <header id="main-header">
-            <div class="header-left">
-                <img src="imagenes/logo.png" class="logo-img">
-                <div style="font-weight: 800; color: var(--blue-dark); font-size: 14px;">SISTEMA DE COTIZACIONES</div>
-            </div>
-            <button class="btn-logout" onclick="cerrarSesion()">
-                <i class="fas fa-sign-out-alt"></i> SALIR DEL SISTEMA
-            </button>
-        </header>
+                <label>Subasta</label>
+                <select id="casa_subasta" onchange="calcularFacturaAutomatica()">
+                    <option value="iaai">IAAI</option>
+                    <option value="copart" selected>Copart (U.S. Licensed)</option>
+                </select>
 
-        <div class="main-layout" id="main-content">
-            <div class="ui-input-section">
-                <div class="card">
-                    <div class="card-title">Configuración del Vehículo</div>
-                    
-                    <label>Nombre del Vehículo</label>
-                    <input type="text" id="vehiculo" placeholder="Ej. Honda Civic">
+                <label>Bid (Oferta USD)</label>
+                <input type="number" id="bid_subasta" oninput="calcularFacturaAutomatica()" placeholder="0.00">
 
-                    <label>Número de Lote</label>
-                    <input type="text" id="lote" placeholder="00000000">
+                <label>Factura Subasta (Con Fees)</label>
+                <input type="number" id="factura" readonly style="background: #f8fafc; font-weight: 700; color: var(--accent);">
 
-                    <label>Subasta</label>
-                    <select id="casa_subasta" onchange="calcularFacturaAutomatica()">
-                        <option value="iaai">IAAI</option>
-                        <option value="copart" selected>Copart (U.S. Licensed)</option>
-                    </select>
+                <label>Seleccionar Tipo de Vehículo (DAI)</label>
+                <select id="tipo_dai">
+                    <option value="0.25">Automovil < 1300cc (25%)</option>
+                    <option value="0.25">Automovil > 1300cc (25%)</option>
+                    <option value="0.30">Automovil > 2000cc (30%)</option>
+                    <option value="0.30">Automovil > 2000cc AWD (30%)</option>
+                    <option value="0.05">Pickups (5%)</option>
+                    <option value="0.30">Vehiculo 4x4 (30%)</option>
+                    <option value="0.01">Camiones 4-20T (1%)</option>
+                    <option value="0.15">Moto < 250cc (15%)</option>
+                    <option value="0.15">Moto > 250cc (15%)</option>
+                </select>
 
-                    <label>Bid (Oferta USD)</label>
-                    <input type="number" id="bid_subasta" oninput="calcularFacturaAutomatica()" placeholder="0.00">
+                <label>Estado / Patio</label>
+                <select id="estado" onchange="cargarPatios()"><option value="">Seleccione estado...</option></select>
+                <select id="patio"></select>
 
-                    <label>Factura Subasta (Con Fees)</label>
-                    <input type="number" id="factura" readonly style="background: #f8fafc; font-weight: 700; color: var(--accent);">
-
-                    <label>Seleccionar Tipo de Vehículo (DAI)</label>
-                    <select id="tipo_dai">
-                        <option value="0.25">Automovil < 1300cc (25%)</option>
-                        <option value="0.25">Automovil > 1300cc (25%)</option>
-                        <option value="0.30">Automovil > 2000cc (30%)</option>
-                        <option value="0.30">Automovil > 2000cc AWD (30%)</option>
-                        <option value="0.05">Pickups (5%)</option>
-                        <option value="0.30">Vehiculo 4x4 (30%)</option>
-                        <option value="0.01">Camiones 4-20T (1%)</option>
-                        <option value="0.15">Moto < 250cc (15%)</option>
-                        <option value="0.15">Moto > 250cc (15%)</option>
-                    </select>
-
-                    <label>Estado / Patio</label>
-                    <select id="estado" onchange="cargarPatios()"><option value="">Seleccione estado...</option></select>
-                    <select id="patio"></select>
-
-                    <button class="btn-calc" onclick="generarReporte()">CALCULAR AHORA</button>
-                    <button id="btnPdf" class="btn-pdf" onclick="window.print()">
-                        <i class="fas fa-file-pdf"></i> GENERAR PDF
-                    </button>
-                </div>
-            </div>
-
-            <div id="area-impresion">
-                <div class="report-header">
-                    <div>
-                        <h2 style="margin:0; color:var(--blue-dark);">PRESUPUESTO DE IMPORTACIÓN</h2>
-                        <span style="color:var(--accent); font-weight:800;">Siliezar AutoImport El Salvador</span>
-                    </div>
-                    <img src="imagenes/logo.png" style="width:120px;">
-                </div>
-
-                <div id="meta-info" class="meta-grid">
-                    <div class="meta-item"><b>Vehículo</b><span id="res-vehiculo"></span></div>
-                    <div class="meta-item"><b>Lote</b><span id="res-lote"></span></div>
-                    <div class="meta-item"><b>Fecha</b><span id="res-fecha"></span></div>
-                </div>
-
-                <div id="pdf-columnas" class="result-container"></div>
-
-                <div id="disclaimer-text" class="disclaimer">
-                    * Los cálculos son proyecciones basadas en su imagen de referencia (DAI corregido).
-                </div>
+                <button class="btn-calc" onclick="generarReporte()">CALCULAR AHORA</button>
+                <button id="btnPdf" class="btn-pdf" onclick="window.print()">
+                    <i class="fas fa-file-pdf"></i> GENERAR PDF
+                </button>
             </div>
         </div>
 
-        <script src="iaa.js"></script>
-        <script src="copart.js"></script>
-        <script src="matus.js"></script>
-        <script src="ptp.js"></script>
+        <div id="area-impresion">
+            <div class="report-header">
+                <div>
+                    <h2 style="margin:0; color:var(--blue-dark);">PRESUPUESTO DE IMPORTACIÓN</h2>
+                    <span style="color:var(--accent); font-weight:800;">Siliezar AutoImport El Salvador</span>
+                </div>
+                <img src="imagenes/logo.png" style="width:120px;">
+            </div>
 
-        <script>
-            // Función de salida rápida con animación
-            function cerrarSesion() {
-                // 1. Efecto visual de desvanecimiento
-                document.body.classList.add('fade-out');
+            <div id="meta-info" class="meta-grid">
+                <div class="meta-item"><b>Vehículo</b><span id="res-vehiculo"></span></div>
+                <div class="meta-item"><b>Lote</b><span id="res-lote"></span></div>
+                <div class="meta-item"><b>Fecha</b><span id="res-fecha"></span></div>
+            </div>
 
-                // 2. Limpieza de datos
-                localStorage.clear();
-                sessionStorage.clear();
+            <div id="pdf-columnas" class="result-container"></div>
 
-                // 3. Redirección tras la animación (500ms)
-                setTimeout(() => {
-                    window.location.href = "login.html"; 
-                }, 500);
+            <div id="disclaimer-text" class="disclaimer">
+                * Los cálculos son proyecciones basadas en su imagen de referencia (DAI corregido).
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts externos -->
+    <script src="iaa.js"></script>
+    <script src="copart.js"></script>
+    <script src="matus.js"></script>
+    <script src="ptp.js"></script>
+
+    <script>
+        function cerrarSesion() {
+            // Animación de salida
+            document.body.classList.add('fade-out');
+
+            // Borramos de raíz toda la sesión
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Redirección inmediata
+            setTimeout(() => {
+                window.location.replace("login.html");
+            }, 500);
+        }
+
+        function calcularFacturaAutomatica() {
+            const bidVal = parseFloat(document.getElementById("bid_subasta").value);
+            const casa = document.getElementById("casa_subasta").value;
+            const inputFactura = document.getElementById("factura");
+            if (!isNaN(bidVal) && bidVal > 0) {
+                let fees = (casa === "iaai") ? calcularFeesIAA(bidVal) : calcularFeesCopart(bidVal);
+                inputFactura.value = (bidVal + fees).toFixed(2);
+            } else { inputFactura.value = ""; }
+        }
+
+        window.onload = function() {
+            const sEstado = document.getElementById("estado");
+            if (typeof gruasMatus !== 'undefined') {
+                Object.keys(gruasMatus).sort().forEach(est => {
+                    const opt = document.createElement("option");
+                    opt.value = est; opt.textContent = est.replace(/_/g, " ");
+                    sEstado.appendChild(opt);
+                });
             }
+        };
 
-            function calcularFacturaAutomatica() {
-                const bidVal = parseFloat(document.getElementById("bid_subasta").value);
-                const casa = document.getElementById("casa_subasta").value;
-                const inputFactura = document.getElementById("factura");
-                if (!isNaN(bidVal) && bidVal > 0) {
-                    let fees = (casa === "iaai") ? calcularFeesIAA(bidVal) : calcularFeesCopart(bidVal);
-                    inputFactura.value = (bidVal + fees).toFixed(2);
-                } else { inputFactura.value = ""; }
+        function cargarPatios() {
+            const est = document.getElementById("estado").value;
+            const sPatio = document.getElementById("patio");
+            sPatio.innerHTML = "";
+            if (gruasMatus[est]) {
+                gruasMatus[est].forEach(p => {
+                    const opt = document.createElement("option");
+                    opt.value = p.precio; opt.textContent = p.ciudad;
+                    sPatio.appendChild(opt);
+                });
             }
+        }
 
-            window.onload = function() {
-                const sEstado = document.getElementById("estado");
-                if (typeof gruasMatus !== 'undefined') {
-                    Object.keys(gruasMatus).sort().forEach(est => {
-                        const opt = document.createElement("option");
-                        opt.value = est; opt.textContent = est.replace(/_/g, " ");
-                        sEstado.appendChild(opt);
-                    });
-                }
-            };
+        function generarReporte() {
+            const facturaVal = parseFloat(document.getElementById("factura").value) || 0;
+            const gruaVal = parseFloat(document.getElementById("patio").value) || 0;
+            const daiPorc = parseFloat(document.getElementById("tipo_dai").value);
+            
+            if (facturaVal <= 0) return alert("Ingrese el BID.");
 
-            function cargarPatios() {
-                const est = document.getElementById("estado").value;
-                const sPatio = document.getElementById("patio");
-                sPatio.innerHTML = "";
-                if (gruasMatus[est]) {
-                    gruasMatus[est].forEach(p => {
-                        const opt = document.createElement("option");
-                        opt.value = p.precio; opt.textContent = p.ciudad;
-                        sPatio.appendChild(opt);
-                    });
-                }
-            }
+            const flete = 955.00;
+            const tramitador = 100.00;
+            const docBL = 20.00;
+            const pagoPuerto = 43.00;
 
-            function generarReporte() {
-                const facturaVal = parseFloat(document.getElementById("factura").value) || 0;
-                const gruaVal = parseFloat(document.getElementById("patio").value) || 0;
-                const daiPorc = parseFloat(document.getElementById("tipo_dai").value);
-                
-                if (facturaVal <= 0) return alert("Ingrese el BID.");
+            const valorCIF = facturaVal + flete + gruaVal; 
+            const dai = valorCIF * daiPorc;
+            const iva = (valorCIF + dai) * 0.13;
+            const matricula = valorCIF * 0.057;
+            const totalFinal = valorCIF + dai + iva + matricula + tramitador + docBL + pagoPuerto;
 
-                const flete = 955.00;
-                const tramitador = 100.00;
-                const docBL = 20.00;
-                const pagoPuerto = 43.00;
+            document.getElementById("res-vehiculo").textContent = document.getElementById("vehiculo").value || "Vehículo";
+            document.getElementById("res-lote").textContent = document.getElementById("lote").value || "N/A";
+            document.getElementById("res-fecha").textContent = new Date().toLocaleDateString();
+            document.getElementById("meta-info").style.display = "grid";
 
-                const valorCIF = facturaVal + flete + gruaVal; 
-                const dai = valorCIF * daiPorc;
-                const iva = (valorCIF + dai) * 0.13;
-                const matricula = valorCIF * 0.057;
-                const totalFinal = valorCIF + dai + iva + matricula + tramitador + docBL + pagoPuerto;
+            const crearTarjeta = (titulo, color, rec) => `
+                <div class="opt-card">
+                    <div class="opt-header ${color}">${titulo} ${rec ? '★ RECOMENDADO' : ''}</div>
+                    <div class="opt-cif"><span>VALOR CIF ADUANA:</span><b>$${valorCIF.toLocaleString(undefined,{minimumFractionDigits:2})}</b></div>
+                    <div class="cat-tag"><i class="fas fa-truck"></i> LOGÍSTICA</div>
+                    <div class="item-row"><span>Flete Marítimo:</span><b>$${flete.toFixed(2)}</b></div>
+                    <div class="item-row"><span>Grúa Interna:</span><b>$${gruaVal.toFixed(2)}</b></div>
+                    <div class="cat-tag"><i class="fas fa-university"></i> IMPUESTOS ADUANA</div>
+                    <div class="item-row"><span>DAI (${(daiPorc*100).toFixed(0)}%):</span><b>$${dai.toFixed(2)}</b></div>
+                    <div class="item-row"><span>IVA (13%):</span><b>$${iva.toFixed(2)}</b></div>
+                    <div class="item-row"><span>Matrícula (5.7%):</span><b>$${matricula.toFixed(2)}</b></div>
+                    <div class="cat-tag"><i class="fas fa-wallet"></i> OTROS GASTOS</div>
+                    <div class="item-row"><span>Tramitador:</span><b>$${tramitador.toFixed(2)}</b></div>
+                    <div class="item-row"><span>Documentación BL:</span><b>$${docBL.toFixed(2)}</b></div>
+                    <div class="item-row"><span>Pago Puerto (PE):</span><b>$${pagoPuerto.toFixed(2)}</b></div>
+                    <div class="total-section">
+                        <span style="font-size:9px; font-weight:800; color:#64748b;">TOTAL PUESTO EN ADUANA</span>
+                        <h2 class="total-value">$${totalFinal.toLocaleString(undefined,{minimumFractionDigits:2})}</h2>
+                    </div>
+                </div>`;
 
-                document.getElementById("res-vehiculo").textContent = document.getElementById("vehiculo").value || "Vehículo";
-                document.getElementById("res-lote").textContent = document.getElementById("lote").value || "N/A";
-                document.getElementById("res-fecha").textContent = new Date().toLocaleDateString();
-                document.getElementById("meta-info").style.display = "grid";
-
-                const crearTarjeta = (titulo, color, rec) => `
-                    <div class="opt-card">
-                        <div class="opt-header ${color}">${titulo} ${rec ? '★ RECOMENDADO' : ''}</div>
-                        <div class="opt-cif"><span>VALOR CIF ADUANA:</span><b>$${valorCIF.toLocaleString(undefined,{minimumFractionDigits:2})}</b></div>
-                        <div class="cat-tag"><i class="fas fa-truck"></i> LOGÍSTICA</div>
-                        <div class="item-row"><span>Flete Marítimo:</span><b>$${flete.toFixed(2)}</b></div>
-                        <div class="item-row"><span>Grúa Interna:</span><b>$${gruaVal.toFixed(2)}</b></div>
-                        <div class="cat-tag"><i class="fas fa-university"></i> IMPUESTOS ADUANA</div>
-                        <div class="item-row"><span>DAI (${(daiPorc*100).toFixed(0)}%):</span><b>$${dai.toFixed(2)}</b></div>
-                        <div class="item-row"><span>IVA (13%):</span><b>$${iva.toFixed(2)}</b></div>
-                        <div class="item-row"><span>Matrícula (5.7%):</span><b>$${matricula.toFixed(2)}</b></div>
-                        <div class="cat-tag"><i class="fas fa-wallet"></i> OTROS GASTOS</div>
-                        <div class="item-row"><span>Tramitador:</span><b>$${tramitador.toFixed(2)}</b></div>
-                        <div class="item-row"><span>Documentación BL:</span><b>$${docBL.toFixed(2)}</b></div>
-                        <div class="item-row"><span>Pago Puerto (PE):</span><b>$${pagoPuerto.toFixed(2)}</b></div>
-                        <div class="total-section">
-                            <span style="font-size:9px; font-weight:800; color:#64748b;">TOTAL PUESTO EN ADUANA</span>
-                            <h2 class="total-value">$${totalFinal.toLocaleString(undefined,{minimumFractionDigits:2})}</h2>
-                        </div>
-                    </div>`;
-
-                document.getElementById("pdf-columnas").innerHTML = crearTarjeta("OPCIÓN A", "", true) + crearTarjeta("OPCIÓN B", "blue", false);
-                document.getElementById("btnPdf").style.display = "block";
-                document.getElementById("disclaimer-text").style.display = "block";
-            }
-        </script>
-    </body>
-    </html>
+            document.getElementById("pdf-columnas").innerHTML = crearTarjeta("OPCIÓN A", "", true) + crearTarjeta("OPCIÓN B", "blue", false);
+            document.getElementById("btnPdf").style.display = "block";
+            document.getElementById("disclaimer-text").style.display = "block";
+        }
+    </script>
+</body>
+</html>
