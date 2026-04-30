@@ -173,15 +173,13 @@
 </head>
 <body>
 
-    <!-- Pantalla de Bienvenida (Se activa al validar) -->
     <div id="loader">
         <img src="imagenes/logo.png" alt="Pablo Siliezar" class="welcome-logo">
         <div class="spinner"></div>
         <p style="font-size: 18px; letter-spacing: 1px; opacity: 0.8;">Iniciando sistema...</p>
-        <h2 style="color: var(--accent); margin-top: 10px; font-size: 28px;">¡Bienvenido, Pablo Siliezar</h2>
+        <h2 style="color: var(--accent); margin-top: 10px; font-size: 28px;">¡Bienvenido, Pablo!</h2>
     </div>
 
-    <!-- Sección de Login -->
     <div id="login-section" class="main-wrapper">
         <div class="info-section">
             <img src="imagenes/logo.png" alt="Pablo" class="big-logo">
@@ -224,11 +222,12 @@
             const u = document.getElementById("userInput").value.trim();
             const p = document.getElementById("passInput").value.trim();
 
+            // Credenciales
             if (u === "admin" && p === "admin") {
                 const loginSection = document.getElementById("login-section");
                 const loader = document.getElementById("loader");
 
-                // Animación de salida del formulario
+                // Animación de salida
                 loginSection.style.opacity = "0";
                 loginSection.style.transform = "translateY(-20px)";
                 
@@ -237,19 +236,21 @@
                     loader.style.display = "block";
                 }, 500);
 
-                sessionStorage.setItem("login", "true");
-                
+                // IMPORTANTE: Guardamos la sesión activa
+                localStorage.setItem("sesionActiva", "true");
                 
                 setTimeout(() => {
+                    // Cambia "index.html" por el nombre real de tu archivo de calculadora si es distinto
                     window.location.href = "index.html";
-                }, 3000); 
+                }, 2500); 
             } else {
                 alert("Acceso denegado. Por favor verifique sus credenciales.");
             }
         }
 
+        // Si ya está logueado, lo mandamos directo al index al entrar al login
         window.onload = function() {
-            if (sessionStorage.getItem("login") === "true") {
+            if (localStorage.getItem("sesionActiva") === "true") {
                 window.location.href = "index.html";
             }
         }
